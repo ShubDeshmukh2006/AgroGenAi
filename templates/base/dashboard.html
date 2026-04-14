@@ -1,0 +1,1122 @@
+{% extends 'base/base.html' %}
+{% load translation_tags %}
+
+{% block title %}{{ 'dashboard'|t:site_lang }}{% endblock %}
+
+{% block content %}
+<!-- Welcome Section with Farmer Illustration -->
+<div class="welcome-hero mb-4">
+    <div class="welcome-card-modern">
+        <div class="welcome-content">
+            <div class="welcome-text">
+                <h1 class="welcome-title">
+                    <span class="wave-hand">👋</span> Welcome back, {{ user.first_name|default:user.username }}!
+                </h1>
+                <p class="welcome-subtitle">Your smart farming companion - Grow smarter, harvest better!</p>
+            </div>
+            <div class="farmer-illustration">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Farmer figure -->
+                    <circle cx="100" cy="80" r="25" fill="#8B4513"/>
+                    <rect x="85" y="105" width="30" height="40" rx="5" fill="#4A90E2"/>
+                    <rect x="75" y="125" width="50" height="25" rx="5" fill="#7B68EE"/>
+                    <!-- Hat -->
+                    <ellipse cx="100" cy="70" rx="30" ry="8" fill="#2C3E50"/>
+                    <!-- Tools -->
+                    <line x1="60" y1="120" x2="70" y2="140" stroke="#654321" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="65" cy="142" r="4" fill="#FFD700"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Stats Row -->
+<div class="row g-4 mb-4">
+    <!-- Weather Card with Background -->
+    <div class="col-lg-4 col-md-6">
+        <div class="modern-card weather-card-modern">
+            <div class="weather-bg">
+                <div class="weather-clouds">
+                    <svg viewBox="0 0 100 50" class="cloud-svg">
+                        <path d="M20 25 Q10 20 10 30 T20 35 Q30 40 40 35 Q50 45 60 40 Q70 35 75 25 Q80 15 70 15 Q65 5 55 10 Q45 5 35 10 Q25 5 20 15 Q10 15 10 25 Z" fill="rgba(255,255,255,0.3)"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="card-header-modern">
+                    <div class="icon-wrapper-large weather-icon-wrapper">
+                        <i class="fas fa-cloud-sun weather-icon-main"></i>
+                    </div>
+                    <h3 class="card-title-modern">Current Weather</h3>
+                </div>
+                <div id="weather-info" class="weather-info">
+                    <div class="weather-loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading weather...
+                    </div>
+                </div>
+                <div class="weather-actions">
+                    <a href="{% url 'weather_dashboard' %}" class="btn-modern btn-weather">
+                        <i class="fas fa-chart-line me-2"></i>View Forecast
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Farm Stats Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="modern-card stats-card-modern">
+            <div class="card-content">
+                <div class="card-header-modern">
+                    <div class="icon-wrapper-large stats-icon-wrapper">
+                        <i class="fas fa-chart-bar stats-icon-main"></i>
+                    </div>
+                    <h3 class="card-title-modern">Farm Statistics</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="stat-value counter" data-target="{{ user.farm_size|default:556|floatformat:1 }}">29</div>
+                        <div class="stat-label">Hectares</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="stat-value counter" data-target="{{ scheme_applications_count|default:18 }}">18</div>
+                        <div class="stat-label">Scheme Applications</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-spray-can"></i>
+                        </div>
+                        <div class="stat-value counter" data-target="{{ user.farm_size|default:556|floatformat:1 }}">12</div>
+                        <div class="stat-label">Field Tips</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="col-lg-4 col-md-12">
+        <div class="modern-card quick-actions-card">
+            <div class="card-content">
+                <div class="card-header-modern">
+                    <div class="icon-wrapper-large actions-icon-wrapper">
+                        <i class="fas fa-bolt actions-icon-main"></i>
+                    </div>
+                    <h3 class="card-title-modern">Quick Actions</h3>
+                </div>
+                <div class="quick-actions-list">
+                    <a href="{% url 'schemes_list' %}" class="quick-action-item">
+                        <i class="fas fa-university"></i>
+                        <span>Govt Schemes</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="{% url 'exports_list' %}" class="quick-action-item">
+                        <i class="fas fa-globe"></i>
+                        <span>Export Opportunities</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="{% url 'unified_assistant' %}" class="quick-action-item">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Chatbot</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="{% url 'pesticides_list' %}" class="quick-action-item">
+                        <i class="fas fa-spray-can"></i>
+                        <span>Pesticides Guide</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Cards Grid -->
+<div class="row g-4 mb-4">
+    <!-- Weather Forecast Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="feature-card-modern weather-feature-card">
+            <div class="feature-illustration weather-feature-illustration">
+                <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sun -->
+                    <circle cx="75" cy="60" r="20" fill="#FFD700"/>
+                    <line x1="75" y1="30" x2="75" y2="35" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="75" y1="85" x2="75" y2="90" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="30" y1="60" x2="35" y2="60" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="115" y1="60" x2="120" y2="60" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="45" y1="45" x2="48" y2="48" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="102" y1="72" x2="105" y2="75" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="102" y1="45" x2="105" y2="48" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="45" y1="72" x2="48" y2="75" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Rain drops -->
+                    <line x1="60" y1="100" x2="60" y2="115" stroke="#4A90E2" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="75" y1="105" x2="75" y2="120" stroke="#4A90E2" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="90" y1="100" x2="90" y2="115" stroke="#4A90E2" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="feature-content">
+                <div class="feature-icon">
+                    <i class="fas fa-cloud-sun"></i>
+                </div>
+                <h4 class="feature-title">Weather Forecast</h4>
+                <p class="feature-description">Stay updated with accurate weather predictions for your farm.</p>
+                <a href="{% url 'weather_dashboard' %}" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-calendar-alt me-2"></i>Check Weather
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pesticide Guide Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="feature-card-modern pesticide-card">
+            <div class="feature-illustration pesticide-illustration">
+                <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Spray bottle -->
+                    <rect x="60" y="70" width="30" height="50" fill="#E0E0E0" rx="3"/>
+                    <rect x="62" y="72" width="26" height="46" fill="#BBDEFB" rx="2"/>
+                    <polygon points="70,70 80,70 78,60 72,60" fill="#90CAF9"/>
+                    <circle cx="75" cy="65" r="3" fill="#2196F3"/>
+                    <rect x="65" y="85" width="20" height="8" fill="#4CAF50" rx="2"/>
+                    <!-- Spray -->
+                    <circle cx="50" cy="50" r="5" fill="#E3F2FD" opacity="0.6"/>
+                    <circle cx="45" cy="45" r="4" fill="#BBDEFB" opacity="0.5"/>
+                    <circle cx="55" cy="48" r="3" fill="#90CAF9" opacity="0.4"/>
+                </svg>
+            </div>
+            <div class="feature-content">
+                <div class="feature-icon">
+                    <i class="fas fa-spray-can"></i>
+                </div>
+                <h4 class="feature-title">Pesticide Guide</h4>
+                <p class="feature-description">Find the right pesticides and treatments for your crops.</p>
+                <a href="{% url 'pesticides_list' %}" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-book me-2"></i>View Guide
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Government Schemes Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="feature-card-modern schemes-card">
+            <div class="feature-illustration schemes-illustration">
+                <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="40" y="60" width="70" height="70" fill="#6C757D" rx="3"/>
+                    <rect x="45" y="65" width="20" height="15" fill="#FFD700"/>
+                    <rect x="70" y="65" width="20" height="15" fill="#FFD700"/>
+                    <rect x="45" y="85" width="20" height="15" fill="#FFD700"/>
+                    <rect x="70" y="85" width="20" height="15" fill="#FFD700"/>
+                    <polygon points="35,60 115,60 105,50 45,50" fill="#495057"/>
+                    <rect x="85" y="40" width="25" height="30" fill="white" rx="2" stroke="#343A40" stroke-width="1"/>
+                    <line x1="90" y1="48" x2="105" y2="48" stroke="#343A40" stroke-width="1"/>
+                    <line x1="90" y1="53" x2="105" y2="53" stroke="#343A40" stroke-width="1"/>
+                    <line x1="90" y1="58" x2="100" y2="58" stroke="#343A40" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="feature-content">
+                <div class="feature-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h4 class="feature-title">Government Schemes</h4>
+                <p class="feature-description">Explore useful schemes, subsidies, and loans for your farm.</p>
+                <a href="{% url 'schemes_list' %}" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-clipboard-list me-2"></i>View Schemes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+/* ===== MODERN DASHBOARD STYLES ===== */
+
+:root {
+    --primary-green: #2E7D32;
+    --light-green: #4CAF50;
+    --lighter-green: #81C784;
+    --lightest-green: #C8E6C9;
+    --white: #FFFFFF;
+    --light-blue: #E3F2FD;
+    --earth-brown: #8B4513;
+    --earth-tan: #D2B48C;
+    --warm-white: #FFFBF5;
+    --shadow-soft: 0 4px 20px rgba(46, 125, 50, 0.1);
+    --shadow-medium: 0 8px 30px rgba(46, 125, 50, 0.15);
+    --shadow-strong: 0 12px 40px rgba(46, 125, 50, 0.2);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Welcome Hero Section */
+.welcome-hero {
+    margin-bottom: 2rem;
+}
+
+.welcome-card-modern {
+    background: linear-gradient(135deg, var(--light-green) 0%, var(--primary-green) 100%);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-strong);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-card-modern::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.welcome-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-text {
+    flex: 1;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wave-hand {
+    display: inline-block;
+    animation: wave 2s ease-in-out infinite;
+    font-size: 2.5rem;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(20deg); }
+    75% { transform: rotate(-20deg); }
+}
+
+.welcome-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.95);
+    font-weight: 400;
+}
+
+.farmer-illustration {
+    width: 200px;
+    height: 200px;
+    margin-left: 2rem;
+    opacity: 0.9;
+}
+
+.farmer-illustration svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+/* Modern Card Base */
+.modern-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(46, 125, 50, 0.1);
+    height: 100%;
+}
+
+.modern-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-strong);
+    border-color: var(--light-green);
+}
+
+/* Weather Card */
+.weather-card-modern {
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+    padding: 0;
+}
+
+.weather-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+    overflow: hidden;
+}
+
+.weather-clouds {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+}
+
+.cloud-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.weather-card-modern .card-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+    margin-top: 120px;
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+}
+
+.weather-icon-wrapper {
+    background: linear-gradient(135deg, #FFA726 0%, #FB8C00 100%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -60px auto 1rem;
+    box-shadow: 0 8px 20px rgba(255, 167, 38, 0.3);
+}
+
+.weather-icon-main {
+    font-size: 2.5rem;
+    color: var(--white);
+}
+
+.card-title-modern {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1A237E;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.weather-info {
+    text-align: center;
+    padding: 1rem 0;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.weather-loading {
+    color: #666;
+    font-size: 1rem;
+}
+
+.weather-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Stats Card */
+.stats-card-modern .card-content {
+    padding: 2rem;
+}
+
+.stats-icon-wrapper {
+    background: linear-gradient(135deg, var(--light-green) 0%, var(--primary-green) 100%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+.stats-icon-main {
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #F1F8E9 0%, #E8F5E9 100%);
+    border-radius: 16px;
+    transition: var(--transition-smooth);
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Quick Actions Card */
+.quick-actions-card .card-content {
+    padding: 2rem;
+}
+
+.actions-icon-wrapper {
+    background: linear-gradient(135deg, #7B68EE 0%, #6A5ACD 100%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 6px 20px rgba(123, 104, 238, 0.3);
+}
+
+.actions-icon-main {
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.quick-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quick-action-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+    border-radius: 12px;
+    text-decoration: none;
+    color: #4A148C;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+    border: 2px solid transparent;
+}
+
+.quick-action-item:hover {
+    transform: translateX(8px);
+    background: linear-gradient(135deg, #E1BEE7 0%, #CE93D8 100%);
+    border-color: #7B1FA2;
+    color: #4A148C;
+}
+
+.quick-action-item i:first-child {
+    font-size: 1.5rem;
+    width: 30px;
+}
+
+.quick-action-item span {
+    flex: 1;
+}
+
+.quick-action-item i:last-child {
+    opacity: 0.6;
+    transition: var(--transition-smooth);
+}
+
+.quick-action-item:hover i:last-child {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+/* Feature Cards */
+.feature-card-modern {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-card-modern:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-strong);
+    border-color: var(--light-green);
+}
+
+.feature-illustration {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+    transition: var(--transition-smooth);
+}
+
+.feature-card-modern:hover .feature-illustration {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.feature-illustration svg {
+    width: 100%;
+    height: 100%;
+    max-width: 150px;
+}
+
+.feature-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--light-green) 0%, var(--primary-green) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+.feature-icon i {
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1A237E;
+    margin-bottom: 0.75rem;
+}
+
+.feature-description {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+/* Buttons */
+.btn-modern {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-modern:hover::before {
+    left: 100%;
+}
+
+.btn-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.btn-primary-modern {
+    background: linear-gradient(135deg, var(--light-green) 0%, var(--primary-green) 100%);
+    color: var(--white);
+}
+
+.btn-primary-modern:hover {
+    background: linear-gradient(135deg, var(--primary-green) 0%, #1B5E20 100%);
+    color: var(--white);
+}
+
+.btn-weather {
+    background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%);
+    color: var(--white);
+}
+
+.btn-weather:hover {
+    background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+}
+
+/* Voice Card with Glow */
+.voice-card {
+    background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+    position: relative;
+    overflow: visible;
+}
+
+.voice-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(156, 39, 176, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse-glow 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+.mic-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mic-button-glow {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+    border: 4px solid var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(156, 39, 176, 0.4),
+                0 0 0 10px rgba(156, 39, 176, 0.1),
+                0 0 0 20px rgba(156, 39, 176, 0.05);
+    transition: var(--transition-smooth);
+    animation: mic-pulse 2s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+    0%, 100% {
+        box-shadow: 0 8px 30px rgba(156, 39, 176, 0.4),
+                    0 0 0 10px rgba(156, 39, 176, 0.1),
+                    0 0 0 20px rgba(156, 39, 176, 0.05);
+    }
+    50% {
+        box-shadow: 0 8px 40px rgba(156, 39, 176, 0.6),
+                    0 0 0 15px rgba(156, 39, 176, 0.2),
+                    0 0 0 30px rgba(156, 39, 176, 0.1);
+    }
+}
+
+.mic-button-glow:hover {
+    transform: scale(1.1);
+    animation: none;
+    box-shadow: 0 12px 50px rgba(156, 39, 176, 0.6),
+                0 0 0 15px rgba(156, 39, 176, 0.2),
+                0 0 0 30px rgba(156, 39, 176, 0.1);
+}
+
+.mic-icon {
+    font-size: 2.5rem;
+    color: var(--white);
+}
+
+.btn-voice {
+    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+    color: var(--white);
+}
+
+.btn-voice:hover {
+    background: linear-gradient(135deg, #7B1FA2 0%, #6A1B9A 100%);
+    color: var(--white);
+}
+
+/* AI Optimization Card */
+.ai-optimization-card {
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CD 100%);
+    border: 2px solid #FFC107;
+}
+
+.ai-icon-wrapper {
+    background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.5rem;
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+}
+
+.ai-icon-main {
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.ai-optimization-card .card-header-modern {
+    display: flex;
+    align-items: center;
+}
+
+.card-subtitle {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 0.25rem;
+}
+
+.form-label-modern {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-control-modern {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #E0E0E0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    background: var(--white);
+}
+
+.form-control-modern:focus {
+    outline: none;
+    border-color: var(--light-green);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    transform: translateY(-2px);
+}
+
+.ai-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-ai-predict {
+    background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+    color: var(--white);
+}
+
+.btn-ai-predict:hover {
+    background: linear-gradient(135deg, #FFA000 0%, #FF8F00 100%);
+}
+
+.btn-ai-optimize {
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    color: var(--white);
+}
+
+.btn-ai-optimize:hover {
+    background: linear-gradient(135deg, #F57C00 0%, #E65100 100%);
+}
+
+.ai-results {
+    margin-top: 2rem;
+}
+
+.result-box {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--light-green);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.result-box ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.result-box li {
+    margin-bottom: 0.5rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Icon Wrappers */
+.icon-wrapper-large {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .welcome-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .farmer-illustration {
+        margin: 1.5rem 0 0 0;
+    }
+    
+    .welcome-title {
+        font-size: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stats-grid .stat-item:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 1.75rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modern-card {
+        padding: 1.5rem;
+    }
+    
+    .feature-card-modern {
+        padding: 1.5rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modern-card, .feature-card-modern {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* High Contrast for Accessibility */
+.btn-modern, .quick-action-item {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.feature-title, .card-title-modern {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Large readable fonts */
+.welcome-title { font-size: 2.5rem; }
+.welcome-subtitle { font-size: 1.2rem; }
+.stat-value { font-size: 2rem; }
+.feature-description { font-size: 1rem; line-height: 1.6; }
+</style>
+
+<script>
+function refreshDashboard() { 
+    const btn = document.querySelector('.refresh-btn');
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Refreshing...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadWeatherData();
+    animateCounters();
+    
+    // Animate cards on load
+    const cards = document.querySelectorAll('.modern-card, .feature-card-modern');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+});
+
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = parseFloat(counter.getAttribute('data-target')) || 0;
+        const increment = target / 50;
+        let current = 0;
+        
+        const updateCounter = () => {
+            if (current < target) {
+                current += increment;
+                counter.textContent = current < 1 ? current.toFixed(1) : Math.ceil(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target < 1 ? target.toFixed(1) : Math.ceil(target);
+            }
+        };
+        
+        updateCounter();
+    });
+}
+
+function loadWeatherData() {
+    const weatherInfo = document.getElementById('weather-info');
+    if (!weatherInfo) return;
+    
+    function renderWeather(data){
+        if (data.error) { 
+            weatherInfo.innerHTML = '<p class="mb-0 text-muted">Weather data unavailable</p>'; 
+            return; 
+        }
+        weatherInfo.innerHTML = `
+            <div class="d-flex flex-column align-items-center">
+                <div class="mb-2">
+                    <h2 class="mb-0" style="font-size: 3rem; color: #1E88E5; font-weight: 700;">${Math.round(data.temperature)}°C</h2>
+                </div>
+                <div class="text-capitalize mb-2" style="font-size: 1.1rem; color: #333; font-weight: 600;">${data.description}</div>
+                <div class="d-flex gap-4 text-center" style="font-size: 0.9rem; color: #666;">
+                    <div>
+                        <div style="font-weight: 600;">Humidity</div>
+                        <div>${data.humidity}%</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;">Wind</div>
+                        <div>${data.wind_speed} m/s</div>
+                    </div>
+                </div>
+            </div>`;
+    }
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos){
+            fetch('/weather/get-current-location/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ latitude: pos.coords.latitude, longitude: pos.coords.longitude })
+            }).then(r=>r.json()).then(renderWeather).catch(()=>{ 
+                weatherInfo.innerHTML = '<p class="mb-0 text-muted">Weather data unavailable</p>'; 
+            });
+        }, function(){
+            fetch('/weather/get-weather/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ location: '{{ user.location|default:"Delhi" }}' })
+            }).then(r=>r.json()).then(renderWeather).catch(()=>{ 
+                weatherInfo.innerHTML = '<p class="mb-0 text-muted">Weather data unavailable</p>'; 
+            });
+        });
+    } else {
+        fetch('/weather/get-weather/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ location: '{{ user.location|default:"Delhi" }}' })
+        }).then(r=>r.json()).then(renderWeather).catch(()=>{ 
+            weatherInfo.innerHTML = '<p class="mb-0 text-muted">Weather data unavailable</p>'; 
+        });
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

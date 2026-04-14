@@ -1,0 +1,152 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Export Opportunities{% endblock %}
+
+{% block extra_head %}
+<style>
+  .export-hero {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 1.75rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0d6efd 0%, #20c997 100%);
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.25);
+  }
+  .export-hero-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .export-hero-text {
+    margin-bottom: 0;
+    opacity: 0.9;
+  }
+  .export-hero-pill {
+    background: rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .export-card {
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .export-card .card-header {
+    background: linear-gradient(90deg, rgba(13,110,253,0.06), rgba(32,201,151,0.08));
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .export-table thead {
+    background-color: #f8fafc;
+  }
+  .export-table th {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+    border-bottom-width: 1px;
+  }
+  .export-table tbody tr:hover {
+    background: rgba(13,110,253,0.03);
+  }
+  .export-country {
+    font-weight: 600;
+    color: #0f5132;
+  }
+  .export-product {
+    font-weight: 600;
+  }
+  .export-volume {
+    font-weight: 600;
+    color: #0d6efd;
+  }
+  .export-contact-name {
+    font-weight: 500;
+  }
+  .export-empty {
+    border-radius: 16px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="export-hero d-flex flex-wrap justify-content-between align-items-start">
+    <div>
+        <h2 class="export-hero-title mb-1">
+            <i class="fas fa-globe me-2"></i>Export Opportunities
+        </h2>
+        <p class="export-hero-text">
+            See which countries need your crops and connect with trusted buyers.
+        </p>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex gap-2">
+        <span class="export-hero-pill">
+            <i class="fas fa-seedling me-1"></i>Farmer friendly view
+        </span>
+        <span class="export-hero-pill">
+            <i class="fas fa-chart-line me-1"></i>Demand focused
+        </span>
+    </div>
+</div>
+
+<div class="card mb-4 export-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-shipping-fast me-2"></i>Export Services
+        </h5>
+        <small class="text-muted d-none d-sm-inline">
+            Match your harvest with high-demand markets.
+        </small>
+    </div>
+    <div class="card-body">
+        {% if exports %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle export-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Country</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Demand</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Export Volume</th>
+                        <th scope="col" class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in exports %}
+                    <tr>
+                        <td class="export-country">{{ item.country }}</td>
+                        <td class="export-product">{{ item.product }}</td>
+                        <td>
+                            <span class="badge {% if item.demand_level == 'High' %}bg-success{% elif item.demand_level == 'Medium' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                {{ item.demand_level }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="export-contact-name">{{ item.contact_name }}</div>
+                            <div class="small text-muted">{{ item.contact_email }}</div>
+                        </td>
+                        <td class="export-volume">{{ item.export_volume }} tons</td>
+                        <td class="text-end">
+                            <a href="{% url 'export_detail' item.id %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye me-1"></i>View details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-light border export-empty mb-0 text-center">
+            <div class="mb-1"><i class="fas fa-info-circle me-1 text-primary"></i>No export listings available yet.</div>
+            <div class="small text-muted">Check back soon for new buying opportunities for your crops.</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+
