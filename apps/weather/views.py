@@ -22,7 +22,7 @@ class LocationWeatherTracker:
                 data = response.json()
                 latitude = data.get('latitude')
                 longitude = data.get('longitude')
-                
+            
                 if latitude and longitude:
                     return {
                         'latitude': latitude,
